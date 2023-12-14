@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "simple-blog"
+version = "0.1.0"
+description = "A simple blog"
+authors = ["edpyt <edrsa1321s@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.105.0"
+sqlalchemy = "^2.0.23"
+pytest = "^7.4.3"
+pytest-asyncio = "^0.23.2"
+httpx = "^0.25.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
