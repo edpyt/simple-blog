@@ -19,4 +19,5 @@ class DataBaseProvider:
             yield session
 
 
-def uow_provider(): ...
+def uow_provider():
+    ...
