@@ -3,12 +3,12 @@ from fastapi import FastAPI
 import pytest_asyncio
 from httpx import AsyncClient
 
-from src.main import app
+from src.main import build_app
 
 
 @pytest_asyncio.fixture(name='app_')
 async def get_app() -> FastAPI:
-    return app
+    return build_app()
 
 
 @pytest_asyncio.fixture(name='test_client')
