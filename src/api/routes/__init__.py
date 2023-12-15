@@ -1,1 +1,1 @@
-from . import blog  
+from . import blog  # noqa: F401
