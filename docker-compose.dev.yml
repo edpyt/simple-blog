@@ -2,5 +2,5 @@ services:
   fastapi:
     build:
       context: .
-      dockerfile: ./compose/Dockerfile
+      dockerfile: ./compose/run/Dockerfile
     command: uvicorn src.main:app --reload
