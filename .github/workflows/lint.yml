@@ -26,4 +26,8 @@ jobs:
         run: pip install flake8
       - name: Run flake8
         run: flake8 .
-  
+      
+      - name: Install ruff
+        run: pip install ruff
+      - name: Run ruff
+        run: ruff .
