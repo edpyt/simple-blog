@@ -1,14 +1,11 @@
-import uuid as guid
-
-from sqlalchemy import types
+from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.infrastructure.db.models.base import Base
+from src.infrastructure.db.models.base import BaseUUIDModel
 
 
-class Post(Base):
+class Post(BaseUUIDModel):
     __tablename__ = 'posts'
 
-    uuid: Mapped[guid.UUID] = mapped_column(
-        types.Uuid, primary_key=True, default=guid.uuid4
-    )
+    title: Mapped[str] = mapped_column(String(128), nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
