@@ -16,8 +16,3 @@ async def test_user_create(db_session: AsyncSession) -> None:
     created_user = (await db_session.execute(select(User))).first()[0]
 
     assert create_user is created_user
-
-
-@pytest.mark.asyncio
-async def test_user_password_hashes(db_session: AsyncSession) -> None:
-    ...
