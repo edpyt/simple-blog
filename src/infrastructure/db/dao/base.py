@@ -13,7 +13,7 @@ class BaseDAO(Generic[Model]):
     def __init__(self, model: Type[Model], session: AsyncSession) -> None:
         self.model = model
         self.session = session
-    
+
     async def _get_all(
         self, options: Sequence[ORMOption] = tuple()
     ) -> Sequence[Model]:

@@ -1,5 +1,8 @@
 from sqlalchemy.ext.asyncio import (
-    AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
 )
 
 
@@ -9,7 +12,5 @@ def create_engine(db_url: str) -> AsyncEngine:
 
 def build_session(engine: AsyncEngine) -> AsyncSession:
     return async_sessionmaker(
-        bind=engine,
-        autoflush=True,
-        expire_on_commit=False
+        bind=engine, autoflush=True, expire_on_commit=False
     )

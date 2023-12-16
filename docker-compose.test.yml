@@ -5,9 +5,9 @@ services:
       dockerfile: ./compose/test/Dockerfile
     env_file:
       - ./compose/test/.env.test
-    volumes:
-      - ./src:/app/src
-    command: pytest tests/
+    command: pytest tests/ -ss
+    depends_on:
+      - db
 
   db:
     image: postgres
