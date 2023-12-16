@@ -8,4 +8,4 @@ from src.infrastructure.db.models.post import Post
 @pytest.mark.asyncio
 async def test_dao_functional(db_session: AsyncSession) -> None:
     post_dao = BaseDAO(Post, db_session)
-    print(await post_dao._get_all())
+    await post_dao._get_all()  # Should not raise error

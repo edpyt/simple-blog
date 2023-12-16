@@ -9,7 +9,7 @@ from src.infrastructure.db.models import Base, Post
 @pytest.mark.parametrize(
     'model_obj',
     [
-        Post(),
+        Post(title='test', body='test'),
     ],
 )
 async def test_db_tables_creation(
@@ -28,7 +28,7 @@ async def test_db_tables_creation(
 @pytest.mark.parametrize(
     'model_obj',
     [
-        Post(),
+        Post(title='test', body='test'),
     ],
 )
 async def test_create_record(db_session: AsyncSession, model_obj: Base) -> None:
@@ -45,7 +45,7 @@ async def test_create_record(db_session: AsyncSession, model_obj: Base) -> None:
 @pytest.mark.parametrize(
     'model_obj',
     [
-        Post(),
+        Post(title='test', body='test'),
     ],
 )
 async def test_that_records_are_not_saving_through_test_session(
