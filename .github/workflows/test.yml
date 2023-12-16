@@ -4,9 +4,38 @@ on:
   push:
     branches: ["main"]
 
+env:
+  POSTGRES_USER: test
+  POSTGRES_PASSWORD: test
+  POSTGRES_DB: test
+  POSTGRES_HOST: db
+  POSTGRES_PORT: 5432
+
 jobs:
-  starlette:
+  fastapi:
     runs-on: ubuntu-latest
+    # Service containers to run with `runner-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     strategy:
       matrix:
           python-version: ['3.11']
@@ -26,3 +55,5 @@ jobs:
       - name: Run tests
         working-directory: ./tests
         run: poetry run pytest .
+        env:
+          TEST_DATABASE_URL: postgresql+asyncpg://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@127.0.0.1:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}
