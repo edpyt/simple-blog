@@ -6,15 +6,18 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.di.providers.db import db_provider
+from src.api.di.providers.holder import holder_provider
 from src.core.utils.auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     Token,
     authenticate_user,
     create_access_token,
     get_current_active_user,
-    register_user
+    register_user,
 )
 from src.domain.blog.dto.user import CreateUserDTO
+from src.infrastructure.db.dao.user import UserDAO
+from src.infrastructure.db.holder import Holder
 from src.infrastructure.db.models.user import User
 
 router = APIRouter()
@@ -23,7 +26,7 @@ router = APIRouter()
 @router.post('/token', response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db_session: AsyncSession = Depends(db_provider)
+    db_session: AsyncSession = Depends(db_provider),
 ) -> dict[str, str]:
     user = await authenticate_user(
         db_session, form_data.username, form_data.password
@@ -33,18 +36,18 @@ async def login_for_access_token(
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username},  # type: ignore
-        expires_delta=access_token_expires
+        expires_delta=access_token_expires,
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post('/register')
 async def create_new_user(
-    user_dto: CreateUserDTO,
-    db_session: AsyncSession = Depends(db_provider)
+    user_dto: CreateUserDTO, holder: Holder = Depends(holder_provider)
 ) -> dict[str, bool]:
-    is_created: bool = await register_user(db_session, user_dto)
-    return {'is_created': is_created}
+    user_dao: UserDAO = holder.user
+    await register_user(user_dao, user_dto)
+    return {'is_created': True}
 
 
 @router.get("/users/me")
