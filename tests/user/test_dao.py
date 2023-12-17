@@ -43,7 +43,9 @@ async def test_get_user_by_username(
     user_dao: UserDAO, created_user: User
 ) -> None:
     """Test get user by username in DAO"""
-    user: User = await user_dao.get_user(User.username == created_user.username)
+    user: User = await user_dao.get_user(    # type: ignore
+        User.username == created_user.username
+    )
 
     assert user.username == created_user.username
     assert user.password == created_user.password

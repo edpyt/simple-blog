@@ -1,1 +1,1 @@
-from .user import UserDAO
+from .user import UserDAO  # noqa: F401

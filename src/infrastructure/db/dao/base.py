@@ -1,15 +1,13 @@
-import time
 from typing import Generic, Optional, Sequence, Type, TypeVar
 
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.interfaces import ORMOption
 
 from src.infrastructure.db.models.base import Base
 from src.infrastructure.db.models.user import User
 
-Model = TypeVar("Model", bound=Base, covariant=True, contravariant=False)
+Model = TypeVar("Model", bound=Base)
 
 
 class BaseDAO(Generic[Model]):
@@ -29,9 +27,7 @@ class BaseDAO(Generic[Model]):
         result = (await self.session.execute(stmt)).scalars().all()
         return result
 
-    async def _get_one(
-        self, options: Sequence[ORMOption]
-    ) -> Optional[User]:
+    async def _get_one(self, options: Sequence[ORMOption]) -> Optional[User]:
         """
         Get one or none object from db
 

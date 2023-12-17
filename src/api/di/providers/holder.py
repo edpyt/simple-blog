@@ -15,9 +15,9 @@ class HolderProvider:
             yield Holder(session)
 
 
-def holder_provider() -> HolderProvider:
+def holder_provider() -> HolderProvider:  # type: ignore
     ...
 
 
-def user_dao() -> UserDAO:
+def user_dao() -> UserDAO:  # type: ignore
     ...

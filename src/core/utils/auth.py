@@ -6,8 +6,6 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import BaseModel
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.api.di.providers.db import db_provider
 from src.api.di.providers.holder import user_dao
 from src.core.utils.password import verify_password
 from src.domain.blog.dto.user import CreateUserDTO
@@ -80,7 +78,7 @@ def create_access_token(
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
-    user_dao: Annotated[UserDAO, Depends(user_dao)]
+    user_dao: Annotated[UserDAO, Depends(user_dao)],
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

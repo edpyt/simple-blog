@@ -1,4 +1,4 @@
-from typing import Any, Sequence
+from typing import Optional, Sequence
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,8 +22,7 @@ class UserDAO(BaseDAO):
         :return: User object
         """
         create_user = User(
-            username=user_dto.username,
-            password=user_dto.password
+            username=user_dto.username, password=user_dto.password
         )
         try:
             return await self._create(create_user)
@@ -49,7 +48,7 @@ class UserDAO(BaseDAO):
         """
         return await self._get_all(options)
 
-    async def get_user(self, *options: Sequence[ORMOption]) -> User:
+    async def get_user(self, *options: Sequence[ORMOption]) -> Optional[User]:
         """
         Get single user object
 
