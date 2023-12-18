@@ -13,6 +13,6 @@ async def test_user_create(db_session: AsyncSession) -> None:
     db_session.add(create_user)
     await db_session.commit()
     await db_session.refresh(create_user)
-    created_user = (await db_session.execute(select(User))).first()[0]
+    created_user = (await db_session.execute(select(User))).scalar_one()
 
     assert create_user is created_user
