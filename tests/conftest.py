@@ -1,6 +1,7 @@
 import asyncio
 from typing import AsyncGenerator
 
+from asgi_lifespan import LifespanManager
 from fastapi import FastAPI
 from httpx import AsyncClient
 import pytest
@@ -15,7 +16,6 @@ from tests.setup import get_test_db_url, setup_test_di
 
 @pytest.fixture(scope="module")
 def event_loop():
-    """Create an instance of the default event loop for each test case."""
     loop = asyncio.SelectorEventLoop()
     yield loop
     loop.close()
@@ -55,5 +55,7 @@ async def get_app(db_session: AsyncSession) -> FastAPI:
 
 @pytest_asyncio.fixture(name='test_client')
 async def get_test_client(app_: FastAPI) -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app_, base_url='http://test') as async_client:
+    async with AsyncClient(
+        app=app_, base_url='http://test'
+    ) as async_client, LifespanManager(app_):
         yield async_client
