@@ -3,10 +3,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.api.di.providers.db import db_provider
-from src.api.di.providers.holder import holder_provider
+from src.api.di.providers.service import user_service
 from src.core.utils.auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     Token,
@@ -16,8 +14,7 @@ from src.core.utils.auth import (
     register_user,
 )
 from src.domain.blog.dto.user import CreateUserDTO
-from src.infrastructure.db.dao.user import UserDAO
-from src.infrastructure.db.holder import Holder
+from src.domain.blog.services.user import UserService
 from src.infrastructure.db.models.user import User
 
 router = APIRouter()
@@ -26,10 +23,10 @@ router = APIRouter()
 @router.post('/token', response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db_session: AsyncSession = Depends(db_provider),
+    user_service: UserService = Depends(user_service),
 ) -> dict[str, str]:
     user = await authenticate_user(
-        db_session, form_data.username, form_data.password
+        user_service, form_data.username, form_data.password
     )
     if not user:
         raise HTTPException(403, 'ERROR')
@@ -43,10 +40,9 @@ async def login_for_access_token(
 
 @router.post('/register')
 async def create_new_user(
-    user_dto: CreateUserDTO, holder: Holder = Depends(holder_provider)
+    user_dto: CreateUserDTO, user_service: UserService = Depends(user_service)
 ) -> dict[str, bool]:
-    user_dao: UserDAO = holder.user
-    await register_user(user_dao, user_dto)
+    await register_user(user_service, user_dto)
     return {'is_created': True}
 
 
@@ -54,5 +50,4 @@ async def create_new_user(
 async def read_users_me(
     current_user: Annotated[User, Depends(get_current_active_user)]
 ):
-    print(current_user)
     return current_user

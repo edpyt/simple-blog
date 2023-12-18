@@ -6,12 +6,12 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import BaseModel
-from src.api.di.providers.holder import user_dao
+
+from src.api.di.providers.service import user_service
 from src.core.utils.password import verify_password
 from src.domain.blog.dto.user import CreateUserDTO
 from src.domain.blog.exceptions.user import UserWithThisUserNameExists
-from src.infrastructure.db.dao.user import UserDAO
-
+from src.domain.blog.services.user import UserService
 from src.infrastructure.db.models.user import User
 
 SECRET_KEY = os.environ['SECRET_KEY']
@@ -31,7 +31,7 @@ class TokenData(BaseModel):
 
 
 async def authenticate_user(
-    user_dao: UserDAO, username: str, password: str
+    user_service: UserService, username: str, password: str
 ) -> bool | User:
     """
     Authenticate user
@@ -42,14 +42,14 @@ async def authenticate_user(
 
     :return: If user not created return False, else User object
     """
-    user = await user_dao.get_user(User.username == username)
+    user = await user_service.get_user(User.username == username)
     if not user or not verify_password(password, user.password):
         return False
     return user
 
 
 async def register_user(
-    user_dao: UserDAO, create_user_dto: CreateUserDTO
+    user_service: UserService, create_user_dto: CreateUserDTO
 ) -> None:
     """
     Create user, if user with provided username exists throw HTTPException
@@ -58,7 +58,7 @@ async def register_user(
     :param create_user_dto: Create User DTO object
     """
     try:
-        await user_dao.create_user(create_user_dto)
+        await user_service.create_user(create_user_dto)
     except UserWithThisUserNameExists as e:
         raise HTTPException(403, e.error_msg)
 
@@ -78,7 +78,7 @@ def create_access_token(
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
-    user_dao: Annotated[UserDAO, Depends(user_dao)],
+    user_service: Annotated[UserService, Depends(user_service)],
 ) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -93,7 +93,7 @@ async def get_current_user(
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = await user_dao.get_user(User.username == token_data.username)
+    user = await user_service.get_user(User.username == token_data.username)
     if user is None:
         raise credentials_exception
     return user

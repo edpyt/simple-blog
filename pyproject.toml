@@ -17,6 +17,7 @@ python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 bcrypt = "4.0.1"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-multipart = "^0.0.6"
+asgi-lifespan = "^2.1.0"
 
 
 [tool.poetry.group.test.dependencies]
