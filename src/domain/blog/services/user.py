@@ -37,11 +37,12 @@ class UserService:
     async def create_user(self, create_user_dto: CreateUserDTO) -> User:
         """Create user
 
-        :param create_user_dto: DTO for creating user
+        :param create_user_dto: DTO for create user
         """
         create_user = User(
             username=create_user_dto.username, password=create_user_dto.password
         )
+        # TODO: write exception decorators
         try:
             return await self.user_dao.create_user(create_user)
         except IntegrityError:

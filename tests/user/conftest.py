@@ -1,6 +1,5 @@
 import pytest
 import pytest_asyncio
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.utils.auth import create_access_token
 from src.domain.blog.dto.user import CreateUserDTO
@@ -8,11 +7,6 @@ from src.domain.blog.services.user import UserService
 from src.infrastructure.db.dao.user import UserDAO
 from src.infrastructure.db.holder import Holder
 from src.infrastructure.db.models.user import User
-
-
-@pytest.fixture(name='holder_dao')
-def get_holder_dao(db_session: AsyncSession) -> Holder:
-    return Holder(db_session)
 
 
 @pytest.fixture(name='user_dao')

@@ -7,6 +7,7 @@ from httpx import AsyncClient
 import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+from src.infrastructure.db.holder import Holder
 
 from src.infrastructure.db.main import build_session, create_engine
 from src.infrastructure.db.models import Base, Post  # noqa: F401
@@ -59,3 +60,19 @@ async def get_test_client(app_: FastAPI) -> AsyncGenerator[AsyncClient, None]:
         app=app_, base_url='http://test'
     ) as async_client, LifespanManager(app_):
         yield async_client
+
+
+@pytest_asyncio.fixture(name='test_client_authenticated')
+async def get_authenticated_test_client(
+    app_: FastAPI,
+) -> AsyncGenerator[AsyncClient, None]:
+    async with AsyncClient(
+        app=app_, base_url='http://test'
+    ) as async_client, LifespanManager(app_):
+        # token =
+        yield async_client
+
+
+@pytest.fixture(name='holder_dao')
+def get_holder_dao(db_session: AsyncSession) -> Holder:
+    return Holder(db_session)
