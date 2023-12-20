@@ -5,7 +5,8 @@ services:
       dockerfile: ./compose/test/Dockerfile
     env_file:
       - ./compose/test/.env.test
-    command: pytest tests/ -ss
+    # command: pytest tests/ -s
+    command: uvicorn src.main:app --reload
     depends_on:
       - db
 

@@ -4,3 +4,12 @@ services:
       context: .
       dockerfile: ./compose/run/Dockerfile
     command: uvicorn src.main:app --reload
+    env_file:
+      - ./compose/dev/.env
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    env_file:
+      - ./compose/dev/.env

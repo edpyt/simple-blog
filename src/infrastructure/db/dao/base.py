@@ -46,5 +46,5 @@ class BaseDAO(Generic[Model]):
         :return: Created SQLAlchemy model
         """
         self.session.add(create_model)
-        await self.session.flush()
+        await self.session.commit()
         return create_model
