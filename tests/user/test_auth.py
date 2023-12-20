@@ -6,7 +6,6 @@ import pytest
 
 from src.core.utils.auth import (
     authenticate_user,
-    create_access_token,
     get_current_user,
     register_user,
 )
@@ -67,13 +66,6 @@ async def test_authenticate_user(
 
     assert isinstance(user, User)
     assert user.username == created_user.username
-
-
-def test_create_access_token(created_user: User) -> None:
-    """Test creating access token"""
-    access_token = create_access_token(data={'sub': created_user.username})
-
-    assert access_token
 
 
 @pytest.mark.asyncio

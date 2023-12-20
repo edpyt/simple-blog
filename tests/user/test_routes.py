@@ -5,9 +5,7 @@ from src.infrastructure.db.models import User
 
 
 @pytest.mark.asyncio
-async def test_get_token(
-    test_client: AsyncClient, created_user: User
-) -> None:
+async def test_get_token(test_client: AsyncClient, created_user: User) -> None:
     """Test get token from api"""
     response = await test_client.post(
         '/token',
