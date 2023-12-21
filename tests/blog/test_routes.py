@@ -100,9 +100,23 @@ async def test_update_post(
 ) -> None:
     """Test update post"""
     await test_client_authenticated.put(
-        f'/post/update/{created_post.uuid}',
+        f'/post/{created_post.uuid}',
         json={'title': 'Hello world'}
     )
     await db_session.refresh(created_post)
 
     assert created_post.title == 'Hello world'
+
+
+@pytest.mark.asyncio
+async def test_delete_post(
+    test_client_authenticated: AsyncClient,
+    created_post: Post
+) -> None:
+    """Test delete post"""
+    response = await test_client_authenticated.delete(
+        f'/post/{created_post.uuid}'
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {'is_deleted': True}

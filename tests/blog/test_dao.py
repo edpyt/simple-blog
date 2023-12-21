@@ -38,3 +38,11 @@ async def test_update_post(post_dao: PostDAO, created_post: Post) -> None:
     await post_dao.refresh_post(created_post)
 
     assert created_post.title == 'Hello world'
+
+
+@pytest.mark.asyncio
+async def test_delete_post(post_dao: PostDAO, created_post: Post) -> None:
+    """Test delete `Post` record"""
+    await post_dao.delete_post(created_post.uuid)
+
+    assert await post_dao.get_posts() == []
