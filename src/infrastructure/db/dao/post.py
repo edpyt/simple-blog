@@ -55,6 +55,13 @@ class PostDAO(BaseDAO):
         )
         return await self.get_post(Post.uuid == post_uuid)  # type: ignore
 
+    async def delete_post(self, post_uuid: UUID | str) -> None:
+        """Delete post
+
+        :param post_uuid: UUID of `Post`
+        """
+        await self._delete([Post.uuid == post_uuid])
+
     async def refresh_post(self, post: Post) -> Post:
         """Refresh post
 

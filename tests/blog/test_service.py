@@ -46,3 +46,14 @@ async def test_update_post(
     await db_session.refresh(created_post)
 
     assert created_post.title == 'Hello world'
+
+
+@pytest.mark.asyncio
+async def test_delete_post(
+    post_service: PostService,
+    created_post: Post
+) -> None:
+    """Test delete post"""
+    await post_service.delete_post(created_post.uuid)
+
+    assert await post_service.get_posts() == []

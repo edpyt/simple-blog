@@ -57,6 +57,39 @@ async def get_post_by_uuid(
     return post
 
 
+@router.put('/{post_uuid}')
+async def update_post(
+    post_uuid: UUID,
+    post_update_dto: UpdatePostDTO,
+    post_service: PostService = Depends(post_service)
+) -> PostDTO:
+    """Update post
+
+    :param post_uuid: Post object uuid
+    :param post_service: Usecases for Post object
+
+    :return: Post object in json
+    """
+    post = await post_service.update_post(post_uuid, post_update_dto)
+    return post
+
+
+@router.delete('/{post_uuid}')
+async def delete_post(
+    post_uuid: UUID,
+    post_service: PostService = Depends(post_service)
+) -> dict[str, bool]:
+    """Delete post
+
+    :param post_uuid: Post object uuid
+    :param post_service: Usecases for Post object
+
+    :return: Is deleted response message
+    """
+    await post_service.delete_post(post_uuid)
+    return {'is_deleted': True}
+
+
 @router.post('/create/')
 async def create_post(
     create_post_dto: CreatePostDTO,
@@ -75,20 +108,3 @@ async def create_post(
         create_post_dto, current_user
     )
     return {'status': 'success'}
-
-
-@router.put('/update/{post_uuid}')
-async def update_post(
-    post_uuid: str,
-    post_update_dto: UpdatePostDTO,
-    post_service: PostService = Depends(post_service)
-) -> PostDTO:
-    """Update post
-
-    :param post_uuid: Post object uuid
-    :param post_service: Usecases for Post object
-
-    :return: Post object in json
-    """
-    post = await post_service.update_post(post_uuid, post_update_dto)
-    return post

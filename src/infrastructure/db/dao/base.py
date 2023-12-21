@@ -18,8 +18,7 @@ class BaseDAO(Generic[Model]):
     async def _get_all(
         self, options: Sequence[ORMOption] = tuple()
     ) -> Sequence[Model]:
-        """
-        Get all rows from db
+        """Get all rows from db
 
         :return: Sequence of SQLAlchemy models
         """
@@ -28,8 +27,7 @@ class BaseDAO(Generic[Model]):
         return result
 
     async def _get_one(self, options: Sequence[ORMOption]) -> Optional[User]:
-        """
-        Get one or none object from db
+        """Get one or none object from db
 
         :param kwargs: Filter object keys
         :return: Object or None
@@ -39,8 +37,7 @@ class BaseDAO(Generic[Model]):
         return result
 
     async def _create(self, create_model: Model) -> Model:
-        """
-        Create new row and retrieve instance
+        """Create new row and retrieve instance
 
         :param create_model: SQLAlchemy model
         :return: Created SQLAlchemy model
@@ -48,6 +45,15 @@ class BaseDAO(Generic[Model]):
         self.session.add(create_model)
         await self.session.commit()
         return create_model
+
+    async def _delete(self, options: Sequence[ORMOption]) -> None:
+        """Delete record from db
+
+        :param search_key: String model field key for search
+        :param search_value: Model field value for search
+        """
+        obj = await self._get_one(options)
+        await self.session.delete(obj)
 
     async def _update(
         self,

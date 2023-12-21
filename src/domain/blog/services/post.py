@@ -67,3 +67,10 @@ class PostService:
         """
         post = await self.post_dao.update_post(post_uuid, update_post_dto)
         return PostDTO.model_validate(post)
+
+    async def delete_post(self, post_uuid: str | UUID) -> None:
+        """Delete post
+
+        :param post_uuid: UUID of the `Post`
+        """
+        await self.post_dao.delete_post(post_uuid)
