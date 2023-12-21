@@ -1,6 +1,6 @@
-from typing import Generic, Optional, Sequence, Type, TypeVar
+from typing import Any, Generic, Optional, Sequence, Type, TypeVar
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm.interfaces import ORMOption
 
@@ -48,3 +48,20 @@ class BaseDAO(Generic[Model]):
         self.session.add(create_model)
         await self.session.commit()
         return create_model
+
+    async def _update(
+        self,
+        search_key: str,
+        search_value: Any,
+        **update_data
+    ) -> None:
+        stmt = (
+            update(self.model)
+            .where(getattr(self.model, search_key) == search_value)
+            .values(**update_data)
+        )
+        await self.session.execute(stmt)
+
+    async def _refresh_object(self, model: Model) -> Model:
+        await self.session.refresh(model)
+        return model

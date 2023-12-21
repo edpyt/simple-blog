@@ -1,7 +1,9 @@
 from httpx import AsyncClient
 import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.domain.blog.dto.post import PostDTO
+from src.infrastructure.db.models.post import Post
 
 
 @pytest.mark.asyncio
@@ -57,6 +59,50 @@ async def test_trying_to_create_post_without_authenticate(
     create_post_data = {
         'title': 'My first post', 'body': 'First created post!'
     }
-    response = await test_client.post('/post/create', json=create_post_data)
+    response = await test_client.post('/post/create/', json=create_post_data)
 
-    assert response.status_code == 307
+    assert response.status_code == 401
+    assert response.json() == {'detail': 'Not authenticated'}
+
+
+@pytest.mark.asyncio
+async def test_get_all_posts(test_client_authenticated: AsyncClient) -> None:
+    """Test get all posts"""
+    response = await test_client_authenticated.get('/post/all')
+
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+@pytest.mark.asyncio
+async def test_get_one_post(
+    test_client_authenticated: AsyncClient, created_post: Post
+) -> None:
+    """Test get one post"""
+    response = await test_client_authenticated.get(f'/post/{created_post.uuid}')
+
+    assert response.status_code == 200
+
+    post_serialized = (
+        PostDTO
+        .model_validate(created_post)
+        .model_dump(mode='json')
+    )
+
+    assert response.json() == post_serialized
+
+
+@pytest.mark.asyncio
+async def test_update_post(
+    test_client_authenticated: AsyncClient,
+    created_post: Post,
+    db_session: AsyncSession
+) -> None:
+    """Test update post"""
+    await test_client_authenticated.put(
+        f'/post/update/{created_post.uuid}',
+        json={'title': 'Hello world'}
+    )
+    await db_session.refresh(created_post)
+
+    assert created_post.title == 'Hello world'
