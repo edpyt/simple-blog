@@ -6,3 +6,7 @@ Dependencies:
 - Pydantic
 
 Run:
+`make dev`
+
+Test:
+`make test`
