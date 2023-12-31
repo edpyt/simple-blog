@@ -1,13 +1,14 @@
-dev:
+# for using local runs you need to export variables in shell
+dev-local:
 	poetry install
 	uvicorn src.main:app --reload
 
-test:
+test-local:
 	poetry install --with test
 	pytest tests/
 
-docker-dev:
+dev:
 	docker-compose -f 'docker-compose.dev.yml' up --build
 
-docker-test:
-	docker-compose -f 'docker-compose.test.yml' up --build
+test:
+	docker-compose -f 'docker-compose.test.yml' --env-file /dev/null run --build test

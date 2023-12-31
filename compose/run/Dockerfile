@@ -15,4 +15,4 @@ RUN poetry config virtualenvs.create false
 RUN poetry install
 
 # add app
-COPY ./src /app
+COPY ./src /app/src
