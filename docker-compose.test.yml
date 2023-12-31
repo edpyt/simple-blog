@@ -3,9 +3,9 @@ services:
     build:
       context: .
       dockerfile: ./compose/test/Dockerfile
+    command: pytest tests/ -ss
     env_file:
       - ./compose/test/.env.test
-    command: pytest tests/test_db_connection.py -s
     depends_on:
       - db
 

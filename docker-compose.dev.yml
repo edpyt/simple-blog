@@ -3,13 +3,22 @@ services:
     build:
       context: .
       dockerfile: ./compose/run/Dockerfile
-    command: uvicorn src.main:app --reload
+    command: uvicorn src.main:app --reload --host 0.0.0.0
     env_file:
-      - ./compose/dev/.env
+      - ./.env
+    volumes:
+      - ./src:/app/src
+    ports:
+      - 8000:8000
     depends_on:
       - db
 
   db:
     image: postgres
     env_file:
-      - ./compose/dev/.env
+      - ./.env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  
+volumes:
+  pg_data:

@@ -1,30 +1,23 @@
 import asyncio
 from typing import AsyncGenerator
 
+import pytest
+import pytest_asyncio
 from asgi_lifespan import LifespanManager
 from fastapi import FastAPI
 from httpx import AsyncClient
-import pytest
-import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+
 from src.core.utils.auth import authenticate_user, create_access_token
 from src.domain.blog.dto.user import CreateUserDTO
 from src.domain.blog.services.user import UserService
 from src.infrastructure.db.dao.user import UserDAO
 from src.infrastructure.db.holder import Holder
-
 from src.infrastructure.db.main import build_session, create_engine
 from src.infrastructure.db.models import Base, Post  # noqa: F401
 from src.infrastructure.db.models.user import User  # noqa: F401
 from src.main import app
 from tests.setup import get_test_db_url, setup_test_di
-
-
-@pytest.fixture(scope="module")
-def event_loop():
-    loop = asyncio.SelectorEventLoop()
-    yield loop
-    loop.close()
 
 
 @pytest.fixture(name='db_engine')
